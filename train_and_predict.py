@@ -56,8 +56,7 @@ def main(data_dir: Path) -> None:
             "train_r2": r2_score(train["y"], train_predictions),
         })
 
-        submission = test.copy()
-        submission["y"] = model.predict(test[features])
+        submission = pd.DataFrame({"y": model.predict(test[features])})
         if not np.isfinite(submission["y"]).all():
             raise ValueError(f"{variant}: predictions contain non-finite values")
         submission.to_csv(output_dir / f"{ROLL_NUMBER}_pred_{variant}.csv", index=False)

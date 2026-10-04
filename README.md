@@ -26,5 +26,5 @@ The script also reproduces five-fold validation in `validation_results.csv`.
 The validation R2 values are low (approximately 0.155 for var1 and 0.067 for
 var2); the models follow the brief's suggested configurations, but these scores
 do not demonstrate optimal performance. Hidden test scores cannot be computed
-without the test labels. No sample submission was supplied; predictions retain
-all original test columns and append `y`.
+without the test labels. Predictions match the supplied sample submission:
+one `y` column, no index column, and the original test row order.
