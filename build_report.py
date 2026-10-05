@@ -5,7 +5,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 BASE = Path(__file__).resolve().parent
 styles = getSampleStyleSheet()
@@ -61,6 +61,7 @@ for variant in ["var1", "var2"]:
         r = group.loc[group.cv_mse_mean.idxmin()]
         rows.append([variant, str(degree), f"{r.alpha:g}", f"{r.cv_mse_mean:.4f}"])
 table(rows, [2.5, 2, 5, 5])
+story.append(PageBreak())
 heading("3. Evaluation")
 rows = [["Problem", "CV MSE +/- SD", "CV R2", "Holdout MSE", "Holdout R2"]]
 for r in results.itertuples():
