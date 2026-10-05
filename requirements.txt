@@ -3,3 +3,4 @@ pandas==2.3.3
 scikit-learn==1.7.2
 threadpoolctl==3.5.0
 reportlab==5.0.1
+matplotlib==3.10.6

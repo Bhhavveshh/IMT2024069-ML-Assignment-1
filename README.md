@@ -56,3 +56,14 @@ recreates these files and both predictions. To rebuild the black PDF report:
 ```powershell
 python build_report.py
 ```
+
+To reproduce the four black-and-white graphs before building the report:
+
+```powershell
+python plot_results.py --data-dir "path\to\the\assignment\CSVs"
+python build_report.py
+```
+
+The `graphs` directory contains degree-screening curves, CV comparisons,
+holdout predicted-versus-actual plots, residual plots and the plotted holdout data.
+The report includes all four figures and remains within the five-page limit.

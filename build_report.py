@@ -5,7 +5,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
-from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import Image, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 BASE = Path(__file__).resolve().parent
 styles = getSampleStyleSheet()
@@ -73,6 +73,21 @@ heading("4. Final predictions and reproducibility")
 body("After evaluating the chosen configurations, each model was refitted on all 1,000 training rows. Predictions were produced for the corresponding test rows in their original order. IMT2024069_pred_var1.csv and IMT2024069_pred_var2.csv each contain exactly one y column with 1,000 finite predictions and no index, matching sample_submission.csv.")
 body("train_and_predict.py reproduces screening, CV, holdout evaluation, model selection and final inference. screening_results.csv, cv_results.csv, validation_results.csv and selected_models.json record the experiments. requirements.txt records dependency versions; README.md gives execution commands. build_report.py generates this report from the recorded results.")
 body('GitHub repository: <link href="https://github.com/Bhhavveshh/IMT2024069-ML-Assignment-1" color="black">https://github.com/Bhhavveshh/IMT2024069-ML-Assignment-1</link>')
+story.append(PageBreak())
+heading("5. Degree-selection graphs")
+body("Figure 1. Screening MSE across all allowed degrees. Each point is the lowest error among the six alpha values at that degree, evaluated on the 200-row screening split. A star marks the degree ultimately selected by cross-validation. The logarithmic error axis makes both the low-degree decline and high-degree plateau visible.")
+story.append(Image(str(BASE / "graphs/degree_screening.png"), width=17*cm, height=6.29*cm))
+story.append(Spacer(1, 14))
+body("Figure 2. Cross-validation comparison of the four shortlisted degrees. Each point uses the lowest-mean-MSE alpha among the three shortlisted values for that degree. Error bars show one standard deviation across the five folds; they are not confidence intervals. The degree-10 and degree-12 results for var2 are nearly indistinguishable.")
+story.append(Image(str(BASE / "graphs/degree_cv.png"), width=17*cm, height=6.29*cm))
+story.append(PageBreak())
+heading("6. Holdout prediction diagnostics")
+body("Figure 3. Predicted versus actual targets for the 200 holdout rows in each problem. The dashed diagonal represents perfect predictions. These plots use models fitted on the 800 development rows, before refitting on all training rows for submission.")
+story.append(Image(str(BASE / "graphs/holdout_predictions.png"), width=17*cm, height=6.29*cm))
+story.append(Spacer(1, 14))
+body("Figure 4. Holdout residuals plotted against predicted targets. Residuals are actual minus predicted values; the dashed horizontal line marks zero error. These plots expose signed error and target-dependent patterns that aggregate MSE and R2 can obscure. The holdout limitations described in Section 3 also apply to these figures.")
+story.append(Image(str(BASE / "graphs/holdout_residuals.png"), width=17*cm, height=6.29*cm))
+body("plot_results.py reproduces all four figures and their holdout points from the selected configurations and the original training data. Full-resolution PNGs and the corresponding holdout-point CSV files are included in the graphs directory.")
 
 
 def footer(canvas, doc):
