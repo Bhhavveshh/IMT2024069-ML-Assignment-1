@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import Lasso, Ridge
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import KFold, cross_validate, train_test_split
 from sklearn.pipeline import make_pipeline
@@ -17,10 +17,15 @@ MAX_DEGREES = {"var1": 10, "var2": 20}
 ALPHAS = [0.0001, 0.01, 0.1, 1.0, 10.0, 100.0]
 
 
-def make_model(degree, alpha):
+def make_model(degree, alpha, regularization="L2"):
+    if regularization not in {"L1", "L2"}:
+        raise ValueError("Regularization must be L1 or L2")
+    estimator = Ridge(alpha=alpha, solver="cholesky") if regularization == "L2" else Lasso(
+        alpha=alpha, max_iter=30000, tol=0.00001,
+    )
     return make_pipeline(
         PolynomialFeatures(degree=degree, include_bias=False),
-        StandardScaler(), Ridge(alpha=alpha, solver="cholesky"),
+        StandardScaler(), estimator,
     )
 
 

@@ -3,7 +3,8 @@
   "models": {
     "var1": {
       "degree": 5,
-      "alpha": 10.0,
+      "alpha": 0.01,
+      "regularization": "L1",
       "features": [
         "x1",
         "x2",
@@ -16,6 +17,7 @@
     "var2": {
       "degree": 12,
       "alpha": 1.0,
+      "regularization": "L2",
       "features": [
         "x1",
         "x2",

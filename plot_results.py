@@ -56,7 +56,7 @@ def plot_results(data_dir, base):
         x, y, _ = load_data(data_dir, variant)
         development, holdout = train_test_split(np.arange(len(y)), test_size=0.2,
                                                  random_state=SEED + 1)
-        model = make_model(settings["degree"], settings["alpha"])
+        model = make_model(settings["degree"], settings["alpha"], settings.get("regularization", "L2"))
         model.fit(x.iloc[development], y.iloc[development])
         prediction = model.predict(x.iloc[holdout])
         np.testing.assert_allclose(mean_squared_error(y.iloc[holdout], prediction),
@@ -86,6 +86,20 @@ def plot_results(data_dir, base):
                 ax.set(xlabel="Predicted target y", ylabel="Residual (actual - predicted)",
                        title=variant)
         save_figure(fig, directory, name)
+    comparison = pd.read_csv(base / "regularization_comparison.csv")
+    fig, axes = plt.subplots(1, 2, figsize=(10, 3.7), layout="constrained")
+    for ax, variant in zip(axes, ["var1", "var2"]):
+        rows = comparison[(comparison.dataset == variant) & (comparison.status == "converged")]
+        lasso = rows[rows.regularization == "L1"].sort_values("alpha")
+        ridge = rows[rows.regularization == "L2"].iloc[0]
+        ax.plot(lasso.alpha, lasso.cv_mse_mean, "o-", color="black", label="L1: Lasso")
+        ax.axhline(ridge.cv_mse_mean, color="black", linestyle="--", label="Best stage-1 L2: Ridge")
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set(xlabel="Lasso alpha (log scale)", ylabel="Mean CV MSE (log scale)",
+               title=f"{variant}: degree {config[variant]['degree']}")
+        ax.legend(frameon=False, fontsize=8)
+    save_figure(fig, directory, "regularization_comparison")
 
 
 if __name__ == "__main__":
